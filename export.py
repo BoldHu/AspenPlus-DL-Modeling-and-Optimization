@@ -5,6 +5,7 @@ class exporter(object):
     
     def read_result_material_list(self):
         # read the .txt file of properties_material_list to the list
+        self.result_material_list = []
         with open('result_material_list.txt', 'r') as f:
             for line in f:
                 self.result_material_list.append(line.strip())

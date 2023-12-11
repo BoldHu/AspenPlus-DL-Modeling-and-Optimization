@@ -64,31 +64,35 @@ class aspen_model(object):
         self.aspen.Tree.FindNode(r'\Data\Blocks\B3\Input\FRAC\14').Value = random.randint(400, 600) / 1000.0
         self.split_ratio = self.aspen.Tree.FindNode(r'\Data\Blocks\B3\Input\FRAC\14').Value
         
-    def run_simulation(self, inter_num=10):
+    def run_simulation(self, inter_num=2):
         # init the setting
         self.initialize()
         # run the simulation for inter_num times
         for i in range(inter_num):
             self.change_parameter()
             self.aspen.Engine.Run2()
-        self.aromatics_yeild = self.exporter.read_stream_result()
-        self.write_result()
-        
+            print('The ' + str(i+1) + 'th iteration is finished')
+            print('The aromatics yeild is ' + str(self.exporter.read_stream_result()))
+            self.aromatics_yeild = self.exporter.read_stream_result()
+            self.write_result()
+        print('The simulation is finished')
+
     def write_result(self):
         # write the result to the .csv file in data folder by format of 'reactor_temperature, reactor_pressure, feed_flow_rate, split_ratio, aromatics_yeild'
         # if there is no result.csv file in data folder, create one
-        if not os.path.exists('/data/result.csv'):
-            # create the file by format of SEC1 Temperature	SEC2 Temperature	SEC3 Temperature	SEC4 Temperature	SEC1 Pressure	SEC2 Pressure	SEC3 Pressure	SEC4 Pressure	Flow Rate	split ratio	 sum of aromatics
-            with open('data.csv', 'w') as f:
+        # Check if result.csv file exists, if not, create it
+        if not os.path.exists('data/result.csv'):
+            with open('data/result.csv', 'w') as f:
                 f.write('SEC1 Temperature, SEC2 Temperature, SEC3 Temperature, SEC4 Temperature, SEC1 Pressure, SEC2 Pressure, SEC3 Pressure, SEC4 Pressure, Flow Rate, split ratio, sum of aromatics\n')
         # write the result to the .csv file
-        for i in range(4):
-            with open('data.csv', 'a') as f:
+        with open('data/result.csv', 'a') as f:
+            for i in range(4):
                 f.write(str(self.reactor_temperature[i]) + ', ')
                 f.write(str(self.reactor_pressure[i]) + ', ')
-        f.write(str(self.feed_flow_rate) + ', ')
-        f.write(str(self.split_ratio) + ', ')
-        f.write(str(self.aromatics_yeild) + '\n')
+            f.write(str(self.feed_flow_rate) + ', ')
+            f.write(str(self.split_ratio) + ', ')
+            f.write(str(self.aromatics_yeild) + '\n')
+        f.close()
         
 
         
