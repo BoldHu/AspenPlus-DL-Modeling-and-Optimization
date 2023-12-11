@@ -12,7 +12,7 @@ aspen.InitFromArchive2(model_path)
 # step 3: change the input variables and export the results
 # create the aspen model
 reforming_process_model = aspen_model()
-reforming_process_model.run_simulation(inter_num=500)
+reforming_process_model.run_simulation()
 
 # Step 4: Close the Aspen Plus connection
 aspen.Close()

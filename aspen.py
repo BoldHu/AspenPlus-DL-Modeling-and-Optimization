@@ -1,10 +1,13 @@
 import random
 from export import exporter
+import os
+
 class aspen_model(object):
     def __init__(self,aspen):
         self.aspen = aspen
         self.init_setting()
-        self.exporter = exporter()
+        self.exporter = exporter(self.aspen)
+        self.aromatics_yeild = 0
     
     def init_setting(self):
         # read the reactor temperature, path is '\Data\Blocks\HEAT1\Input\TEMP'
@@ -61,13 +64,33 @@ class aspen_model(object):
         self.aspen.Tree.FindNode(r'\Data\Blocks\B3\Input\FRAC\14').Value = random.randint(400, 600) / 1000.0
         self.split_ratio = self.aspen.Tree.FindNode(r'\Data\Blocks\B3\Input\FRAC\14').Value
         
-    def run_simulation(self, inter_num=100):
+    def run_simulation(self, inter_num=10):
         # init the setting
         self.initialize()
         # run the simulation for inter_num times
         for i in range(inter_num):
             self.change_parameter()
             self.aspen.Engine.Run2()
+        self.aromatics_yeild = self.exporter.read_stream_result()
+        self.write_result()
+        
+    def write_result(self):
+        # write the result to the .csv file in data folder by format of 'reactor_temperature, reactor_pressure, feed_flow_rate, split_ratio, aromatics_yeild'
+        # if there is no result.csv file in data folder, create one
+        if not os.path.exists('/data/result.csv'):
+            # create the file by format of SEC1 Temperature	SEC2 Temperature	SEC3 Temperature	SEC4 Temperature	SEC1 Pressure	SEC2 Pressure	SEC3 Pressure	SEC4 Pressure	Flow Rate	split ratio	 sum of aromatics
+            with open('data.csv', 'w') as f:
+                f.write('SEC1 Temperature, SEC2 Temperature, SEC3 Temperature, SEC4 Temperature, SEC1 Pressure, SEC2 Pressure, SEC3 Pressure, SEC4 Pressure, Flow Rate, split ratio, sum of aromatics\n')
+        # write the result to the .csv file
+        for i in range(4):
+            with open('data.csv', 'a') as f:
+                f.write(str(self.reactor_temperature[i]) + ', ')
+                f.write(str(self.reactor_pressure[i]) + ', ')
+        f.write(str(self.feed_flow_rate) + ', ')
+        f.write(str(self.split_ratio) + ', ')
+        f.write(str(self.aromatics_yeild) + '\n')
+        
+
         
         
         
