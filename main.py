@@ -10,9 +10,9 @@ model_path = r'D:\python_workspace\AspenPlus Optimization\PD-P1-CNR-1.bkp'
 aspen.InitFromArchive2(model_path)
 
 # step 3: change the input variables and export the results
-# create the exporter object
-reforming_process_exporter = exporter()
+# create the aspen model
 reforming_process_model = aspen_model()
+reforming_process_model.run_simulation(inter_num=500)
 
 # Step 4: Close the Aspen Plus connection
 aspen.Close()
