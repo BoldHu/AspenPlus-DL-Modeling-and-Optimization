@@ -1,0 +1,28 @@
+PX
+OX
+MX
+EB
+"\Data\Streams\10\Output\MASSFLOW3\C5"
+
+
+Call	Application.Tree.FindNode("\Data\Blocks\SEC1\Input\PRES")
+Call	Application.Tree.FindNode("\Data\Blocks\SEC2\Input\PRES")
+Call	Application.Tree.FindNode("\Data\Blocks\SEC3\Input\PRES")
+Call	Application.Tree.FindNode("\Data\Blocks\SEC4\Input\PRES")
+
+Call	Application.Tree.FindNode("\Data\Blocks\HEAT1\Input\TEMP")
+Call	Application.Tree.FindNode("\Data\Blocks\HEAT1\Input\PRES")
+
+Call	Application.Tree.FindNode("\Data\Blocks\HEAT2\Input\TEMP")
+Call	Application.Tree.FindNode("\Data\Blocks\HEAT2\Input\PRES")
+
+Call	Application.Tree.FindNode("\Data\Blocks\HEAT3\Input\TEMP")
+Call	Application.Tree.FindNode("\Data\Blocks\HEAT3\Input\PRES")
+
+Call	Application.Tree.FindNode("\Data\Blocks\HEAT4\Input\TEMP")
+Call	Application.Tree.FindNode("\Data\Blocks\HEAT4\Input\PRES")
+
+Call	Application.Tree.FindNode("\Data\Blocks\HEAT3\Input\TEMP")
+
+
+Data\Blocks\SEC1\Input\SEC1\PRES

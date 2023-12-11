@@ -9,7 +9,12 @@ aspen = win32com.client.Dispatch("Apwn.Document")
 model_path = r'D:\python_workspace\AspenPlus Optimization\PD-P1-CNR-1.bkp'
 aspen.InitFromArchive2(model_path)
 
-# Step 5: Close the Aspen Plus connection
+# step 3: change the input variables and export the results
+# create the exporter object
+reforming_process_exporter = exporter()
+reforming_process_model = aspen_model()
+
+# Step 4: Close the Aspen Plus connection
 aspen.Close()
 
 # Release the COM object
