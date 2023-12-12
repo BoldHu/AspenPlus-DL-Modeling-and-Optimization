@@ -24,5 +24,8 @@ Call	Application.Tree.FindNode("\Data\Blocks\HEAT4\Input\PRES")
 
 Call	Application.Tree.FindNode("\Data\Blocks\HEAT3\Input\TEMP")
 
+        self.FLOWRATE_value = aspen.Tree.FindNode("\Data\Streams\FEED-101\Input\TOTFLOW\MIXED").Value
+r"Data\Blocks\B3\Input\FRAC\14"
+
 
 Data\Blocks\SEC1\Input\SEC1\PRES
