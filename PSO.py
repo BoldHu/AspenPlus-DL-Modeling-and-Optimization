@@ -22,7 +22,7 @@ def objective_function(x):
     x = sc_X.transform(np.array(x).reshape(1, -1))
     # predict the result
     y_pred = regressor.predict(x)
-    # print(f"Predicted Yield: {y_pred[0]}")
+    print(f"Predicted Yield: {y_pred[0]}")
     return -y_pred[0]
 
 # Define the search space for PSO

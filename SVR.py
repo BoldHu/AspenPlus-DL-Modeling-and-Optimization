@@ -15,24 +15,22 @@ data = pd.read_csv('data/result.csv')
 X = data.iloc[:, :-1]
 y = data.iloc[:, -1]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+print(X_train.shape)
+print(X_train.head())
 
 # scale the data
 sc_X = StandardScaler()
 sc_y = StandardScaler()
 X_train = sc_X.fit_transform(X_train)
 X_test = sc_X.transform(X_test)
-y_train = sc_y.fit_transform(y_train.values.reshape(-1, 1)).ravel()
-y_test = sc_y.transform(y_test.values.reshape(-1, 1)).ravel()
 
 
 # train the model
-regressor = SVR(kernel='rbf', C=10, epsilon=0.1, gamma=0.01, shrinking=True)
+regressor = SVR(kernel='rbf', C=10, epsilon=0.01, gamma=0.01, shrinking=True)
 regressor.fit(X_train, y_train)
 
 # predict the result and convert the result to the original scale
 y_pred = regressor.predict(X_test)
-y_pred = sc_y.inverse_transform(y_pred.reshape(-1, 1))
-y_test = sc_y.inverse_transform(y_test.reshape(-1, 1))
 
 # calculate the R2 score
 r2 = r2_score(y_test, y_pred)
@@ -44,10 +42,10 @@ y_pred = pd.DataFrame(y_pred)
 y_test.to_csv('data/y_test.csv')
 y_pred.to_csv('data/y_pred.csv')
 
-# draw the result
-plt.scatter(y_test, y_pred)
+# draw the result y_test is black and y_pred is blue
+plt.scatter(y_test, y_pred, color='blue')
 # draw the line y=x
-plt.plot([60000, 90000], [60000, 90000], 'r')
+plt.plot([0.5, 0.75], [0.5, 0.75], 'r')
 plt.xlabel('True value')
 plt.ylabel('Predicted value')
 plt.title('SVR')
@@ -79,8 +77,6 @@ pickle.dump(regressor, open('checkpoint/SVR.pkl', 'wb'))
 # sc_y = StandardScaler()
 # X_train = sc_X.fit_transform(X_train)
 # X_test = sc_X.transform(X_test)
-# y_train = sc_y.fit_transform(y_train.values.reshape(-1, 1)).ravel()
-# y_test = sc_y.transform(y_test.values.reshape(-1, 1)).ravel()
 
 
 # # Create an SVR model
