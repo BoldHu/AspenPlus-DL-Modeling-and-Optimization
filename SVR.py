@@ -6,8 +6,6 @@ from sklearn.svm import SVR
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
-import os
-import random
 
 # read the data
 data = pd.read_csv('data/result.csv')
@@ -32,6 +30,7 @@ regressor.fit(X_train, y_train)
 # predict the result and convert the result to the original scale
 y_pred = regressor.predict(X_test)
 
+
 # calculate the R2 score
 r2 = r2_score(y_test, y_pred)
 print('The R2 score is ' + str(r2))
@@ -55,58 +54,3 @@ plt.show()
 # save the model
 import pickle
 pickle.dump(regressor, open('checkpoint/SVR.pkl', 'wb'))
-
-# from sklearn.model_selection import GridSearchCV
-# from sklearn.svm import SVR
-# from sklearn.preprocessing import StandardScaler
-# import pandas as pd
-# from sklearn.model_selection import train_test_split
-
-# # Load your dataset
-# data = pd.read_csv('data/result.csv')
-
-# # Split the data into features and target
-# X = data.iloc[:, :-1]
-# y = data.iloc[:, -1]
-
-# # Split the data into training and testing sets
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# # Scale the features
-# sc_X = StandardScaler()
-# sc_y = StandardScaler()
-# X_train = sc_X.fit_transform(X_train)
-# X_test = sc_X.transform(X_test)
-
-
-# # Create an SVR model
-# regressor = SVR()
-
-# # Define a smaller grid of hyperparameters to search
-# param_grid = {
-#     'kernel': ['linear', 'rbf'],
-#     'C': [0.01, 1, 10],
-#     'epsilon': [0.01, 0.1],
-#     'gamma': ['scale', 'auto', 0.01, 1],
-#     'shrinking': [True, False]
-# }
-
-# # Create a GridSearchCV object with SVR and the parameter grid
-# grid_search = GridSearchCV(estimator=regressor, param_grid=param_grid, cv=5, n_jobs=-1, verbose=2)
-
-# # Fit the grid search to the data
-# grid_search.fit(X_train, y_train)
-
-# # Print the best hyperparameters
-# best_params = grid_search.best_params_
-# print("Best Hyperparameters:", best_params)
-
-# # Get the best model with the best hyperparameters
-# best_model = grid_search.best_estimator_
-
-# # Evaluate the best model on the test data
-# y_pred = best_model.predict(X_test)
-
-# # You can now evaluate the performance of the best model using appropriate metrics
-
-
