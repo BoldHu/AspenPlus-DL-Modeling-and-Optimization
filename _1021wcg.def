@@ -1,0 +1,10 @@
+SLAVE:
+INPUT: _1021wcg.inm
+MODNAME: apmain
+RUNID: _1021wcg
+NEW_RUNID: _1021wcg
+OLD_RUNID: _1021wcg
+PDF: _1021wcg.appdf
+USERNAME: 29808
+XMOD: D:\aspen plus (x86)\Aspen Plus V10.0\Engine\xeq\apmain
+SPONLY:

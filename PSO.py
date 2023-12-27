@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 
 # Load the SVR model with error handling
 try:
-    regressor = pickle.load(open('checkpoint/SVR.pkl', 'rb'))
+    regressor = pickle.load(open('checkpoint/SVR_best.pkl', 'rb'))
 except FileNotFoundError:
     print("File not found. Please check the path to the SVR model.")
     exit()
@@ -26,11 +26,11 @@ def objective_function(x):
     return -y_pred[0]
 
 # Define the search space for PSO
-lb = [470, 0, 470, 0, 470, 0, 470, 0, 900, 0.4] # lower bound
-ub = [600, 1, 600, 1, 600, 1, 600, 1, 1100, 0.6] # upper bound
+lb = [500, 0, 500, 0, 500, 0, 500, 0, 900, 0.4] # lower bound
+ub = [540, 1, 540, 1, 540, 1, 540, 1, 1100, 0.6] # upper bound
 
 # read the data
-data = pd.read_csv('data/result.csv')
+data = pd.read_csv('data/origin_data.csv')
 X_train = data.iloc[:, :-1].values
 y_train = data.iloc[:, -1].values
 X_train, X_test, y_train, y_test = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
@@ -50,10 +50,10 @@ y_test = sc_y.transform(y_test.reshape(-1, 1)).ravel()
 #     lb[i] = (lb[i] - E) / V
 #     ub[i] = (ub[i] - E) / V
 
-# Create a PSO optimizer with adjusted parameters (if needed)
+# Create a PSO optimizer with adjusted parameters (if needed) to find the best parameters to maximize the aromatics yield
 pso = PSO(func=objective_function, n_dim=10, lb=lb, ub=ub, max_iter=100, pop=100, w=0.8, c1=0.5, c2=0.5)
 
-# Run the optimization
+# Run the optimization and save the original scale result
 best_params, best_loss = pso.run()
 # convert the best_params to the original scale
 # for i in range(len(data.columns)-1):
@@ -66,7 +66,6 @@ best_params, best_loss = pso.run()
 
 # convert the result to the original scale
 best_loss = -best_loss
-best_loss = sc_y.inverse_transform(np.array(best_loss).reshape(-1, 1)).ravel()
 print("Best aromatics yield:", best_loss)
 
 # convert the parameters to the original scale

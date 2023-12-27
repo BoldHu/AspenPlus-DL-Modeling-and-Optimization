@@ -4,9 +4,10 @@ from sklearn.preprocessing import StandardScaler
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
+from matplotlib import pyplot as plt
 
 # Load your dataset
-data = pd.read_csv('data/result.csv')
+data = pd.read_csv('data/origin_data.csv')
 
 # Split the data into features and target
 X = data.iloc[:, :-1]
@@ -49,3 +50,30 @@ results.columns = ['Kernel', 'C', 'Epsilon', 'Gamma', 'Shrinking', 'Mean R2 Scor
 results.to_csv('data/hyperpara_search.csv', index=False)
 
 print("Results have been saved to 'data/hyperpara_search.csv'.")
+
+# the best parameters
+print(grid_search.best_params_)
+print(grid_search.best_score_)
+
+# draw the result with the best parameters
+best_regressor = grid_search.best_estimator_
+y_pred = best_regressor.predict(X_test)
+r2 = r2_score(y_test, y_pred)
+print('The R2 score is ' + str(r2))
+y_test = pd.DataFrame(y_test)
+y_pred = pd.DataFrame(y_pred)
+
+# save the best model
+import pickle
+pickle.dump(best_regressor, open('checkpoint/SVR_best.pkl', 'wb'))
+
+plt.scatter(y_test, y_pred, color='blue')
+plt.plot([0.5, 0.75], [0.5, 0.75], 'r')
+plt.xlabel('True value')
+plt.ylabel('Predicted value')
+plt.title('SVR')
+plt.savefig('figures/SVR_best.png')
+plt.show()
+
+
+

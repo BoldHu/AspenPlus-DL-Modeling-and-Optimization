@@ -8,7 +8,7 @@ from sklearn.metrics import r2_score
 from matplotlib import pyplot as plt
 
 # Load your dataset
-data = pd.read_csv('data/result.csv')
+data = pd.read_csv('data/origin_data.csv')
 
 # Split the data into features and target
 X = data.iloc[:, :-1]

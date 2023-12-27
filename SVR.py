@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 
 # read the data
-data = pd.read_csv('data/result.csv')
+data = pd.read_csv('data/origin_data.csv')
 # split the data into training set and test set
 X = data.iloc[:, :-1]
 y = data.iloc[:, -1]
@@ -24,7 +24,7 @@ X_test = sc_X.transform(X_test)
 
 
 # train the model
-regressor = SVR(kernel='rbf', C=10, epsilon=0.01, gamma=0.01, shrinking=True)
+regressor = SVR(kernel='rbf', C=1, epsilon=0.01, gamma='scale', shrinking=True)
 regressor.fit(X_train, y_train)
 
 # predict the result and convert the result to the original scale
@@ -48,9 +48,9 @@ plt.plot([0.5, 0.75], [0.5, 0.75], 'r')
 plt.xlabel('True value')
 plt.ylabel('Predicted value')
 plt.title('SVR')
-plt.savefig('figures/SVR.png')
+plt.savefig('figures/SVR_origin.png')
 plt.show()
 
 # save the model
 import pickle
-pickle.dump(regressor, open('checkpoint/SVR.pkl', 'wb'))
+pickle.dump(regressor, open('checkpoint/SVR_origin.pkl', 'wb'))

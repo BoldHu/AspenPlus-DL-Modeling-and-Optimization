@@ -46,9 +46,9 @@ class aspen_model(object):
         
     def change_parameter(self):
         # the function change the parameter simultaneously and randomly
-        # change the reactor temperature, from 470 to 600
+        # change the reactor temperature, from 500 to 540
         for i in range(1, 5):
-            self.aspen.Tree.FindNode(r'\Data\Blocks\HEAT' + str(i) + '\Input\TEMP').Value = random.randint(470, 600)
+            self.aspen.Tree.FindNode(r'\Data\Blocks\HEAT' + str(i) + '\Input\TEMP').Value = random.randint(500, 540)
             self.reactor_temperature[i-1] = self.aspen.Tree.FindNode(r'\Data\Blocks\HEAT' + str(i) + '\Input\TEMP').Value
         
         # change the reactor pressure, from 0 to 1 MPa
