@@ -25,13 +25,11 @@ X_test = sc_X.transform(X_test)
 regressor = SVR()
 
 # Define a grid of hyperparameters to search
-param_grid = {
-    'kernel': ['linear', 'rbf'],
-    'C': [0.01, 1, 10],
-    'epsilon': [0.01, 0.1],
-    'gamma': ['scale', 'auto', 0.01, 1],
-    'shrinking': [True, False]
-}
+param_grid = {'kernel': ['linear', 'rbf', 'poly'],
+              'C': [0.1, 1, 10, 100],
+              'epsilon': [0.01, 0.1, 1, 10],
+              'gamma': ['scale', 'auto'],
+              'shrinking': [True, False]}
 
 # Create a GridSearchCV object with SVR and the parameter grid
 grid_search = GridSearchCV(estimator=regressor, param_grid=param_grid, cv=5, n_jobs=-1, verbose=2)
@@ -68,7 +66,7 @@ import pickle
 pickle.dump(best_regressor, open('checkpoint/SVR_best.pkl', 'wb'))
 
 plt.scatter(y_test, y_pred, color='blue')
-plt.plot([0.5, 0.75], [0.5, 0.75], 'r')
+plt.plot([0.63, 0.67], [0.63, 0.67], 'r')
 plt.xlabel('True value')
 plt.ylabel('Predicted value')
 plt.title('SVR')

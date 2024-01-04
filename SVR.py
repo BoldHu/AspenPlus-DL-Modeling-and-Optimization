@@ -44,7 +44,7 @@ y_pred.to_csv('data/y_pred.csv')
 # draw the result y_test is black and y_pred is blue
 plt.scatter(y_test, y_pred, color='blue')
 # draw the line y=x
-plt.plot([0.5, 0.75], [0.5, 0.75], 'r')
+plt.plot([0.63, 0.67], [0.63, 0.67], 'r')
 plt.xlabel('True value')
 plt.ylabel('Predicted value')
 plt.title('SVR')

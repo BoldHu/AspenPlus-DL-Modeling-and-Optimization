@@ -5,10 +5,13 @@ from sko.PSO import PSO
 import pickle
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score
+from sklearn.preprocessing import PolynomialFeatures
+
 
 # Load the SVR model with error handling
 try:
-    regressor = pickle.load(open('checkpoint/SVR_best.pkl', 'rb'))
+    regressor = pickle.load(open('checkpoint/RF_best.pkl', 'rb'))
 except FileNotFoundError:
     print("File not found. Please check the path to the SVR model.")
     exit()
@@ -19,50 +22,42 @@ def objective_function(x):
     if not (len(x) == 10 and all(lb[i] <= x[i] <= ub[i] for i in range(len(x)))):
         raise ValueError("Input dimensions or range are incorrect.")
     # convert the input by scaling
-    x = sc_X.transform(np.array(x).reshape(1, -1))
+    x = poly.fit_transform(np.array(x).reshape(1, -1))
+    x = sc_X.transform(x)
     # predict the result
     y_pred = regressor.predict(x)
-    print(f"Predicted Yield: {y_pred[0]}")
     return -y_pred[0]
 
 # Define the search space for PSO
-lb = [500, 0, 500, 0, 500, 0, 500, 0, 900, 0.4] # lower bound
-ub = [540, 1, 540, 1, 540, 1, 540, 1, 1100, 0.6] # upper bound
+lb = [508, 0.3325, 508, 0.3325, 508, 0.3325, 508, 0.3325, 1013.84, 0.4] # lower bound
+ub = [525, 0.3675, 525, 0.3675, 527, 0.3675, 527, 0.3675, 1120.56, 0.6] # upper bound
 
 # read the data
 data = pd.read_csv('data/origin_data.csv')
 X_train = data.iloc[:, :-1].values
 y_train = data.iloc[:, -1].values
+# poly
+poly = PolynomialFeatures(degree=2, include_bias=False)
+X_train = poly.fit_transform(X_train)
+
 X_train, X_test, y_train, y_test = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
 # scale the data
 sc_X = StandardScaler()
 sc_y = StandardScaler()
 X_train = sc_X.fit_transform(X_train)
 X_test = sc_X.transform(X_test)
-y_train = sc_y.fit_transform(y_train.reshape(-1, 1)).ravel()
-y_test = sc_y.transform(y_test.reshape(-1, 1)).ravel()
 
-# get expection and variance of each parameter and modify the search space
-# for i in range(len(data.columns)-1):
-#     df = data.iloc[:, i]
-#     E = df.mean()
-#     V = df.var()
-#     lb[i] = (lb[i] - E) / V
-#     ub[i] = (ub[i] - E) / V
+# find the best parameters for PSO
 
 # Create a PSO optimizer with adjusted parameters (if needed) to find the best parameters to maximize the aromatics yield
-pso = PSO(func=objective_function, n_dim=10, lb=lb, ub=ub, max_iter=100, pop=100, w=0.8, c1=0.5, c2=0.5)
+pso = PSO(func=objective_function, n_dim=10, lb=lb, ub=ub, max_iter=30, pop=100, w=0.5, c1=1.5, c2=0.5)
+
+# the initial parameters
+print("Initial parameters:", pso.gbest_x)
+print("Initial aromatics yield:", -pso.gbest_y)
 
 # Run the optimization and save the original scale result
 best_params, best_loss = pso.run()
-# convert the best_params to the original scale
-# for i in range(len(data.columns)-1):
-#     df = data.iloc[:, i]
-#     E = df.mean()
-#     V = df.var()
-#     best_params[i] = best_params[i] * V + E
-# print("Best Parameters:", best_params)
-# print("Best Loss:", best_loss)
 
 # convert the result to the original scale
 best_loss = -best_loss

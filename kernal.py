@@ -32,7 +32,7 @@ param_grid = {'kernel': ['linear', 'rbf', 'poly']}
 models = []
 results = pd.DataFrame()
 for kernal in param_grid['kernel']:
-    model = SVR(kernel=kernal, C=10, epsilon=0.01, gamma='auto', shrinking=True)
+    model = SVR(kernel=kernal, C=1, epsilon=0.01, gamma=0.01, shrinking=True)
     model.fit(X_train, y_train)
     models.append(model)
     y_pred = model.predict(X_test)

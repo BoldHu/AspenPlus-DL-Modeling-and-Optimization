@@ -46,18 +46,23 @@ class aspen_model(object):
         
     def change_parameter(self):
         # the function change the parameter simultaneously and randomly
-        # change the reactor temperature, from 500 to 540
         for i in range(1, 5):
-            self.aspen.Tree.FindNode(r'\Data\Blocks\HEAT' + str(i) + '\Input\TEMP').Value = random.randint(500, 540)
-            self.reactor_temperature[i-1] = self.aspen.Tree.FindNode(r'\Data\Blocks\HEAT' + str(i) + '\Input\TEMP').Value
+            if i == 1 or i == 2:
+                # change the reactor temperature, from 508 to 525 K
+                self.aspen.Tree.FindNode(r'\Data\Blocks\HEAT' + str(i) + '\Input\TEMP').Value = random.randint(508, 525)
+                self.reactor_temperature[i-1] = self.aspen.Tree.FindNode(r'\Data\Blocks\HEAT' + str(i) + '\Input\TEMP').Value
+            else:
+                # change the reactor temperature, from 508 to 527 K
+                self.aspen.Tree.FindNode(r'\Data\Blocks\HEAT' + str(i) + '\Input\TEMP').Value = random.randint(508, 527)
+                self.reactor_temperature[i-1] = self.aspen.Tree.FindNode(r'\Data\Blocks\HEAT' + str(i) + '\Input\TEMP').Value
         
-        # change the reactor pressure, from 0 to 1 MPa
+        # change the reactor pressure, the base value is 0.35 and change 5% of the base value
         for i in range(1, 5):
-            self.aspen.Tree.FindNode(r'\Data\Blocks\SEC' + str(i) + '\Input\PRES').Value = random.randint(0, 1000) / 1000.0
+            self.aspen.Tree.FindNode(r'\Data\Blocks\SEC' + str(i) + '\Input\PRES').Value = 0.35 + random.uniform(-0.35*0.05, 0.35*0.05)
             self.reactor_pressure[i-1] = self.aspen.Tree.FindNode(r'\Data\Blocks\SEC' + str(i) + '\Input\PRES').Value
         
-        # change the feed flow rate, from 900 to 1100 kmol/h
-        self.aspen.Tree.FindNode(r'\Data\Streams\FEED-101\Input\TOTFLOW\MIXED').Value = random.randint(900, 1100)
+        # change the feed flow rate, base value is 1067.2 and change 5% of the base value
+        self.aspen.Tree.FindNode(r'\Data\Streams\FEED-101\Input\TOTFLOW\MIXED').Value = 1067.2 + random.uniform(-1067.2*0.05, 1067.2*0.05)
         self.feed_flow_rate = self.aspen.Tree.FindNode(r'\Data\Streams\FEED-101\Input\TOTFLOW\MIXED').Value
         
         # change the split ratio, from 0.4 to 0.6
@@ -93,6 +98,34 @@ class aspen_model(object):
             f.write(str(self.split_ratio) + ', ')
             f.write(str(self.aromatics_yeild) + '\n')
         f.close()
+    
+    def run_initial_simulation(self):
+        # init the setting
+        self.initialize()
+        # set the press to 0.35Mpa
+        for i in range(1, 5):
+            self.aspen.Tree.FindNode(r'\Data\Blocks\SEC' + str(i) + '\Input\PRES').Value = 0.35
+            self.reactor_pressure[i-1] = self.aspen.Tree.FindNode(r'\Data\Blocks\SEC' + str(i) + '\Input\PRES').Value
+        # run the simulation
+        self.aspen.Engine.Run2()
+        print('The initial simulation is finished')
+        print('The aromatics yeild is ' + str(self.exporter.read_stream_result()))
+        self.aromatics_yeild = self.exporter.read_stream_result()
+        # save the initial result to the .csv file
+        # if there is no init_result.csv file in data folder, create one
+        if not os.path.exists('data/init_result.csv'):
+            with open('data/init_result.csv', 'w') as f:
+                f.write('SEC1 Temperature, SEC2 Temperature, SEC3 Temperature, SEC4 Temperature, SEC1 Pressure, SEC2 Pressure, SEC3 Pressure, SEC4 Pressure, Flow Rate, split ratio, sum of aromatics\n')
+        # write the result to the .csv file
+        with open('data/init_result.csv', 'a') as f:
+            for i in range(4):
+                f.write(str(self.reactor_temperature[i]) + ', ')
+                f.write(str(self.reactor_pressure[i]) + ', ')
+            f.write(str(self.feed_flow_rate) + ', ')
+            f.write(str(self.split_ratio) + ', ')
+            f.write(str(self.aromatics_yeild) + '\n')
+        print('The simulation is finished')
+
         
 
         
